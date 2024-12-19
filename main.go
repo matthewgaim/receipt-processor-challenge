@@ -33,9 +33,10 @@ func main() {
 
 	http.HandleFunc("POST /receipts/process", func(w http.ResponseWriter, r *http.Request) {
 		var receipt Receipt
-		total_points := 0
-
 		json.NewDecoder(r.Body).Decode(&receipt)
+
+		total_points := 0
+		length_of_items := len(receipt.Items)
 
 		if err := validateReceipt(&receipt); err != nil {
 			fmt.Printf("Receipt not valid: %s\n", err.Error())
@@ -43,35 +44,18 @@ func main() {
 			return
 		}
 
-		retailer_points := getRetailerPoints(receipt.Retailer)
-		total_points += retailer_points
-		fmt.Printf("%d points - retailer_points\n", retailer_points)
-
-		total_is_round_dollar_points := getTotalIsRoundDollarPoints(receipt.Total)
-		total_points += total_is_round_dollar_points
-		fmt.Printf("%d points - total_is_round_dollar_points\n", total_is_round_dollar_points)
-
-		total_is_multiple_of_quarters_points := getTotalIsMultipleOfQuartersPoints(receipt.Total)
-		total_points += total_is_multiple_of_quarters_points
-		fmt.Printf("%d points - total_is_multiple_of_quarters_points\n", total_is_multiple_of_quarters_points)
-
-		length_of_items := len(receipt.Items)
-		two_items_at_time_points := getTwoItemsAtATimePoints(length_of_items)
-		total_points += two_items_at_time_points
-		fmt.Printf("%d points - two_items_at_time_points\n", two_items_at_time_points)
-
+		// Calculate points
+		total_points += retailerPoints(receipt.Retailer)
+		total_points += roundDollarPoints(receipt.Total)
+		total_points += totalQuartersPoints(receipt.Total)
+		total_points += itemPairPoints(length_of_items)
+		total_points += oddDayPoints(receipt.PurchaseDate)
+		total_points += purchaseTimePoints(receipt.PurchaseTime)
 		for _, item := range receipt.Items {
-			total_points += getTrimmedDescriptionLengthIsMultipleOfThreePoints(item)
+			total_points += descPoints(item)
 		}
 
-		purchase_day_odd_points := getPurchaseDateIsOddPoints(receipt.PurchaseDate)
-		total_points += purchase_day_odd_points
-		fmt.Printf("%d points - purchase_day_odd_points\n", purchase_day_odd_points)
-
-		purchase_time_btwn_two_four_points := getPurchaseTimeBetweenTwoAndFourPoints(receipt.PurchaseTime)
-		total_points += purchase_time_btwn_two_four_points
-		fmt.Printf("%d points - purchase_time_btwn_two_four_points\n", purchase_time_btwn_two_four_points)
-		fmt.Printf("Total Points - %d\n", total_points)
+		fmt.Printf("Total Points - %d\n\n", total_points)
 
 		rand_id := createRandomId()
 		points[rand_id] = total_points
