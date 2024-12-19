@@ -7,6 +7,19 @@ Provide any instructions required to run your application.
 
 Data does not need to persist when your application stops. It is sufficient to store information in memory. There are too many different database solutions, we will not be installing a database on our system when testing your application.
 
+## Build Instructions
+
+1. Build the image from the Dockerfile
+    ```console
+    docker build -t receipt-processor-challenge -f Dockerfile.multistage .
+    ```
+
+2. Run docker container
+    ```
+    docker run -p 3000:3000 receipt-processor-challenge
+    ```
+
+3. The API should now be ready on http://localhost:3000/
 ## Language Selection
 
 You can assume our engineers have Go and Docker installed to run your application. Go is our preferred language, but it is not a requirement for this exercise. If you are not using Go, include a Dockerized setup to run the code. You should also provide detailed instructions if your Docker file requires any additional configuration to run the application.
