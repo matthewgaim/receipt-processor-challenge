@@ -27,7 +27,6 @@ type PointsResponse struct {
 	Points int `json:"points"`
 }
 
-// TODO: Change those variable names
 func main() {
 	points := make(map[string]int)
 
