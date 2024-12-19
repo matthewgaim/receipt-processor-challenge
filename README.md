@@ -20,6 +20,30 @@ Data does not need to persist when your application stops. It is sufficient to s
     ```
 
 3. The API should now be ready on http://localhost:3000/
+
+4. To test if it's working, make a CURL request like such:
+    ```console
+    curl -XPOST -d '{
+        "retailer": "Walgreens",
+        "purchaseDate": "2022-01-02",
+        "purchaseTime": "08:13",
+        "total": "2.65",
+        "items": [
+            {"shortDescription": "Pepsi - 12-oz", "price": "1.25"},
+            {"shortDescription": "Dasani", "price": "1.40"}
+        ]
+    }' http://localhost:3000/receipts/process
+    ```
+
+    If its working, you should get a response like this:
+    ```{"id":"b0f05e4d-99c4-445e-a60f-c7fdfd40df99"}```
+
+5. Now use the returned ID to get points with another CURL request:
+    ```console
+    curl http://localhost:3000/receipts/b0f05e4d-99c4-445e-a60f-c7fdfd40df99/points
+    ```
+    which should return JSON with the amount of points that receipt earned, like this:
+    ```{"points":15}```
 ## Language Selection
 
 You can assume our engineers have Go and Docker installed to run your application. Go is our preferred language, but it is not a requirement for this exercise. If you are not using Go, include a Dockerized setup to run the code. You should also provide detailed instructions if your Docker file requires any additional configuration to run the application.
