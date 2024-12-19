@@ -15,7 +15,7 @@ Data does not need to persist when your application stops. It is sufficient to s
     ```
 
 2. Run docker container
-    ```
+    ```console
     docker run -p 3000:3000 receipt-processor-challenge
     ```
 
